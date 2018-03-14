@@ -7,7 +7,6 @@ import { default as categoryElement } from './common/category'
 import * as d3 from 'd3-force'
 import json from './assets/data3.json'
 
-//const json = require('./assets/data.json')
 json.legend.map(category => {
 	new categoryElement(name = category)
 })
@@ -39,7 +38,7 @@ const screenEvent = new domEvent()
 nodeElement.CircleArray.map(circle => {
     let node = nodeElement.CircleMap.get(circle)
     screen.scene.add(circle)
-    node.visible = node.level == 1
+    //node.visible = node.level == 1
 })
 linkeElement.LineArray.map(line => screen.scene.add(line))
 screen.force('domEvent',screenEvent)
@@ -47,8 +46,13 @@ screen.force('domEvent',screenEvent)
 screenEvent.on('tap',({ object,position }) => {
     console.log("tap",object,position,nodeElement.CircleMap.get(object))
 })
+//移动元素
 .on('move',({ object,newPosition,oldPosition }) => {
+    //线条不需要展示
+    if(object.type === "Line"){ return }
+    let node = nodeElement.CircleMap.get(object)
     console.log("move",object,newPosition,oldPosition,nodeElement.CircleMap.get(object))
+    console.log("children",node.Children.size)
 })
 window.c = nodeElement
 

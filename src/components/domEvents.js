@@ -12,7 +12,7 @@ import { default as base } from '../common/element'
 @classAttribute('scene','object',() => new THREE.Scene)
 //查询坐标辅助
 @classAttribute('raycaster',v => v instanceof Raycaster,function (){
-	return new Raycaster()
+	return new Raycaster(/*{ camera:this.camera,renderer:this.renderer }*/)
 })
 //事件
 @classAttribute('emitter',null,new EventEmitter)

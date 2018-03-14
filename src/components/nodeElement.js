@@ -15,7 +15,6 @@ export default class extends nodeElement{
 	static get CircleMap(){ return NODEMAP }
 	static get CircleArray(){ return Array.from(new Set(CIRCLE.values())) }
 
-
 	constructor(){
 		super(...arguments)
 		CIRCLE.set(this.name,this[propCircleName] = createCircle())
@@ -40,8 +39,9 @@ export default class extends nodeElement{
 	}
 	set x(value){
 		if(isNaN(value)){ return }
+		let prevNum = this[propXName]
 		this[propXName] = Number(value)
-		this.update()
+		prevNum !== this[propXName] && this.update()
 	}
 
 	get y(){
@@ -49,16 +49,18 @@ export default class extends nodeElement{
 	}
 	set y(value){
 		if(isNaN(value)){ return }
+		let prevNum = this[propYName]
 		this[propYName] = Number(value)
-		this.update()
+		prevNum !== this[propYName] && this.update()
 	}
 
 	get visible(){
 		return this.Circle.visible
 	}
 	set visible(value){
-		this.Circle.visible = value
+		this.Circle.visible = !!value
 		//展示的时候 update 一次
+		//因为隐藏的时候 坐标不跟新
 		this.visible && this.update()
 		this.Event.emit('visible',this)
 	}

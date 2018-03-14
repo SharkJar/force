@@ -27,26 +27,38 @@ export default class extends linkElement{
 		LINES.set(this.name,this[propLineName])
 	}
 
+	//点和点 已经准备完毕
+	processReady(){
+		this.source.Children = this.target
+		this.target.Parents = this.source
+	}
+
+
+	//当sourceNode更新坐标
 	sourceUpdate(node){
 		let line = this[propLineName]
 		line.geometry.verticesNeedUpdate = true
     	line.geometry.vertices[0] = new THREE.Vector3(node.x, node.y, line.geometry.vertices[0].z)
 	}
+	//当targetNode更新坐标
 	targetUpdate(node){
 		let line = this[propLineName]
 		line.geometry.verticesNeedUpdate = true
     	line.geometry.vertices[1] = new THREE.Vector3(node.x, node.y, line.geometry.vertices[1].z)
 	}
+
+	//当sourceNode隐藏时候
 	sourceVisible(node){
 		//单边节点被隐藏 则线条隐藏
 		this.visible = this.source.visible && this.target.visible
 	}
+	//当targetNode隐藏的时候
 	targetVisible(node){
 		//单边节点被隐藏 则线条隐藏
 		this.visible = this.source.visible && this.target.visible
 	}
 
-
+	//sourceNode
 	get source(){
 		return this[propSourceName] || ''
 	}
@@ -55,17 +67,16 @@ export default class extends linkElement{
 		if(!(value instanceof nodeElement)){ return } 
 		this[propSourceName] = value
 
-		if(value.Event){
-			value.Event
-				.on('update',this.sourceUpdate.bind(this))
-				.on('visible',this.sourceVisible.bind(this))
-		}
+		value.Event && value.Event
+			.on('update',this.sourceUpdate.bind(this))
+			.on('visible',this.sourceVisible.bind(this))
 
-		//互补
-		if(!(this.target instanceof nodeElement)){ return }
-		value.Children = this.target
+		if(this.target instanceof nodeElement && this.source instanceof nodeElement){
+			this.processReady()
+		}
 	}
 
+	//targetNode
 	get target(){
 		return this[propTargetName] || ''
 	}
@@ -74,21 +85,20 @@ export default class extends linkElement{
 		if(!(value instanceof nodeElement)){ return } 
 		this[propTargetName] = value
 
-		if(value.Event){
-			value.Event
-				.on('update',this.targetUpdate.bind(this))
-				.on('visible',this.targetVisible.bind(this))
-		}
+		value.Event && value.Event
+			.on('update',this.targetUpdate.bind(this))
+			.on('visible',this.targetVisible.bind(this))
 
-		//互补
-		if(!(this.source instanceof nodeElement)){ return }
-		value.Parents = this.target
+		if(this.target instanceof nodeElement && this.source instanceof nodeElement){
+			this.processReady()
+		}
 	}
 
+	//是否展示
 	get visible(){
 		return this[propLineName].visible
 	}
 	set visible(value){
-		this[propLineName].visible = value
+		this[propLineName].visible = !!value
 	}
 }
