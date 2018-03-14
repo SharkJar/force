@@ -34,14 +34,6 @@ export class Screen extends base{
 		this.screenHeight = height,
 		this.screenContainer = container
 
-		// let circle = this.circle = new THREE.Mesh(new THREE.CircleBufferGeometry(8, 32), new THREE.MeshBasicMaterial({ color:new THREE.Color(Math.floor('0xAAAAAA')) }))
-		// console.log(circle);
-		// this.scene.add(circle)
-		// this.domEvents.on('tap',({ object }) => { console.log(object,333) })
-		// let position = this.domEvents.getPosition({ clientX:200,clientY:300 },this.circle)
-		// console.log(position)
-		// this.circle.position.set(position.x,position.y,2)
-
 		this.setWindow()
 		this.setPixelRatio()
 		this.setCamera({ z:1000 })
