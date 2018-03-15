@@ -21,16 +21,15 @@ json.links.map(link => {
 })
 
 
-const nodes = nodeElement.NodesArray
-let distanceMax = ((nodes.length / 1000) >> 0) + 1, distanceMin = 0, distance = 50,
-    width = window.innerWidth,height = window.innerHeight
-const screen = new Screen(width,height)
-const screenEvent = new domEvent()
+const nodes = nodeElement.NodesArray,
+      fix = ((nodes.length / 1000) >> 0) + 1,
+      distanceMax = fix * 120, distanceMin = 0, distance = 50,
+      width = window.innerWidth,height = window.innerHeight,
+      screen = new Screen(width,height),
+      screenEvent = new domEvent()
 
 //设置相机焦距
-screen.setCamera({ zoom: 2 / distanceMax  })
-distanceMax = distanceMax * 120
-
+screen.setCamera({ zoom: 2 / fix  })
 
 
 const simulation = d3.forceSimulation(nodes),
@@ -61,9 +60,8 @@ screenEvent.on('tap',({ object,position }) => {
 .on('move',({ object,newPosition,oldPosition }) => {
     //线条不需要展示
     if(object.type === "Line"){ return }
-    let node = nodeElement.CircleMap.get(object)
-
-    let vx = newPosition.x - node.x,
+    let node = nodeElement.CircleMap.get(object),
+        vx = newPosition.x - node.x,
         vy = newPosition.y - node.y
     node.x = newPosition.x,node.y = newPosition.y
     node.roundNodes.forEach(roundNode => {
