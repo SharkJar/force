@@ -5,7 +5,7 @@ import { default as nodeElement } from './components/nodeElement'
 import { default as linkeElement } from './components/linkElement'
 import { default as categoryElement } from './components/categoryElement'
 import * as d3 from 'd3-force'
-import json from './assets/data2.json'
+import json from './assets/data1.json'
 
 json.legend.map(category => {
 	new categoryElement(name = category)
@@ -28,7 +28,7 @@ const screen = new Screen(width,height)
 const screenEvent = new domEvent()
 
 //设置相机焦距
-screen.setCamera({ zoom: 1.3 / distanceMax  })
+screen.setCamera({ zoom: 2 / distanceMax  })
 distanceMax = distanceMax * 120
 
 
