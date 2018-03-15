@@ -51,7 +51,10 @@ export default class Element{
 	initialize(){ }
 
 	constructor(){ 
-		console.log(`Element constructor,i'ts ${this.__proto__.constructor.name}`)
+		let constructorName = this.__proto__.constructor.name
+		if(constructorName !== "_default" && constructorName !== "default"){
+			console.log(`Element constructor,i'ts ${constructorName}`)
+		}
 		;['force','initializeChain'].map(prop => Object.freeze(this[prop]))
 		ELEMENTS.set(this.id,this)
 	}
