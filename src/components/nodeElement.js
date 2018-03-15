@@ -18,6 +18,8 @@ export default class extends nodeElement{
 	constructor(){
 		super(...arguments)
 		CIRCLE.set(this.name,this[propCircleName] = createCircle())
+		//非载体 可以避免因为相机问题而不展示
+    	this[propCircleName].frustumCulled = false
 		//反向映射
 		NODEMAP.set(this[propCircleName],this)
 	}

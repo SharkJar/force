@@ -8,6 +8,8 @@ import { default as base } from '../common/element'
 @classAttribute('renderer','object',new THREE.WebGLRenderer({ antialias: true,precision: 'highp',alpha: true }))
 //声明式
 @classAttribute('camera','object',null)
+//声明式
+@classAttribute('controls','object',null)
 //屏幕
 @classAttribute('scene','object',() => new THREE.Scene)
 //查询坐标辅助
@@ -25,10 +27,11 @@ export class domEvents extends base{
 
 	//初始化
 	initialize(slot = {}){
-		let { camera = null,renderer = null,scene = null } = slot
+		let { camera = null,renderer = null,scene = null,controls = null } = slot
 		this.camera = camera
 		this.renderer = renderer
 		this.scene = scene
+		this.controls = controls
 		this.force('raycaster',this.raycaster)
 		//this.raycaster = new Raycaster({ camera,renderer })
 		this.initEvent()
@@ -51,15 +54,19 @@ export class domEvents extends base{
 		},false)
 		dom.addEventListener('mousemove',event => {
 			if(object && Date.now() - eventTime >= this.sleep){
+				//禁止控制器平移
+				this.controls.enablePan = false
 				this.emitter.emit('move',{ object:object.object,newPosition:this.getPosition(event,object),oldPosition:vec3 })
 			}
 		},false)
 		dom.addEventListener('mouseup',event => {
 			let now = Date.now()
-			if(now - eventTime <= this.sleep || object && this.getPosition(event,object).equals(vec3)){
+			if(now - eventTime <= this.sleep /*|| object && this.getPosition(event,object).equals(vec3)*/){
 				//click
 				this.emitter.emit('tap',{ object:object.object,position:vec3 })
 			}
+			//恢复平移
+			this.controls.enablePan = true
 			object = null,vec3 = null
 		},false)
 		dom.addEventListener('keydown',event => {

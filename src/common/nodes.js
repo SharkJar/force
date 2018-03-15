@@ -3,10 +3,14 @@ import { classAttribute } from '../decorator/classAttribute'
 import { default as categoryMap } from './category'
 import { EventEmitter } from 'events'
 
-const NODES = new Map()
-const propChildrenName = Symbol("child")
-const propParentName = Symbol("parent")
-const propEventName = Symbol("event")
+const NODES = new Map(),
+	  propChildrenName = Symbol("child"),
+	  propParentName = Symbol("parent"),
+	  propEventName = Symbol("event"),
+	  propAllChildrenName = Symbol("children"),
+	  propAllParentsName = Symbol("parents"),
+	  propRoundName = Symbol("round")
+
 const propEmun = {
 	Children:"CHILDREN",
 	Parents:"PARENTS"
@@ -21,7 +25,10 @@ export default class extends Element{
 
 	[propChildrenName] = new nodeSet();
 	[propParentName] = new nodeSet();
-	[propEventName] = new EventEmitter()
+	[propEventName] = new EventEmitter();
+	[propAllChildrenName] = new Set();
+	[propAllParentsName] = new Set();
+	[propRoundName] = new Set()
 
 	constructor(options = {}){
 		super(...arguments)
@@ -53,17 +60,55 @@ export default class extends Element{
 	set Parents(value){
 		nodeSet.setSet.call(this,this[propParentName],value,propEmun.Parents)
 	}
+
+	//获取周边的子节点
+	//只与当前节点一对一的关系
+	get roundNodes(){
+		if(this[propRoundName] && this[propRoundName].size){ return this[propRoundName] }
+		return this[propRoundName] = new Set([ ...Array.from(this.roundChildren),...Array.from(this.roundParents) ]) 
+	}
+
+	get roundChildren(){
+		if(this[propAllChildrenName] && this[propAllChildrenName].size){ return this[propAllChildrenName] }
+		this.Children.forEach(child => {
+			let { Children,Parents } = child
+			//多个子节点
+			//获取单独子节点的时候 子节点不是this
+			//多个父节点
+			//获取单独父节点的时候 父节点不为this
+			if(Children.size > 1  || Parents.size > 1){ return }
+			this[propAllChildrenName].add(child)
+		})
+		return this[propAllChildrenName]
+	}
+	get roundParents(){
+		if(this[propAllParentsName] && this[propAllParentsName].size){ return this[propAllParentsName] }
+		this.Parents.forEach(parent => {
+			let { Children,Parents } = parent
+			//多个子节点
+			//获取单独子节点的时候 子节点不是this
+			//多个父节点
+			//获取单独父节点的时候 父节点不为this
+			if(Children.size > 1 || Parents.size > 1){ return }
+			this[propAllParentsName].add(parent)
+		})
+		return this[propAllParentsName]
+	}
 	
 
 	initialize(content,invokeName){
 		//联动添加
 		if(invokeName === propEmun.Children && !this.Parents.has(content)){
 			this.Parents = content
+			this[propAllParentsName] = new Set()
 		}
 		//联动添加
 		if(invokeName === propEmun.Parents && !this.Children.has(content)){
 			this.Children = content
+			this[propAllChildrenName] = new Set()
 		}
+
+		this[propRoundName] = new Set()
 	}
 
 	destory(content,invokeName){
@@ -75,6 +120,10 @@ export default class extends Element{
 		if(invokeName === propEmun.Parents && this.Children.has(content)){
 			this.Children.delete(content)
 		}
+
+		this[propAllParentsName] = new Set(),
+		this[propAllChildrenName] = new Set(),
+		this[propRoundName] = new Set()
 	}
 }
 

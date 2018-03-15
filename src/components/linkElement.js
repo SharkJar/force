@@ -24,6 +24,8 @@ export default class extends linkElement{
 	constructor(){
 		super(...arguments)
 		this[propLineName] = createLine()
+		//非载体 可以避免因为相机问题而不展示
+    	this[propLineName].frustumCulled = false
 		LINES.set(this.name,this[propLineName])
 	}
 

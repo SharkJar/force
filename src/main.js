@@ -38,7 +38,7 @@ const screenEvent = new domEvent()
 nodeElement.CircleArray.map(circle => {
     let node = nodeElement.CircleMap.get(circle)
     screen.scene.add(circle)
-    //node.visible = node.level == 1
+    node.visible = node.level <= 2
 })
 linkeElement.LineArray.map(line => screen.scene.add(line))
 screen.force('domEvent',screenEvent)
@@ -51,10 +51,15 @@ screenEvent.on('tap',({ object,position }) => {
     //线条不需要展示
     if(object.type === "Line"){ return }
     let node = nodeElement.CircleMap.get(object)
-    console.log("move",object,newPosition,oldPosition,nodeElement.CircleMap.get(object))
-    console.log("children",node.Children.size)
+
+    let vx = newPosition.x - node.x,
+        vy = newPosition.y - node.y
+    node.x = newPosition.x,node.y = newPosition.y
+    node.roundNodes.forEach(roundNode => {
+        roundNode.x += vx,
+        roundNode.y += vy
+    })
 })
-window.c = nodeElement
 
 
 
