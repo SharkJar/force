@@ -61,7 +61,7 @@ export class domEvents extends base{
 		},false)
 		dom.addEventListener('mouseup',event => {
 			let now = Date.now()
-			if(now - eventTime <= this.sleep /*|| object && this.getPosition(event,object).equals(vec3)*/){
+			if(object && now - eventTime <= this.sleep /*|| object && this.getPosition(event,object).equals(vec3)*/){
 				//click
 				this.emitter.emit('tap',{ object:object.object,position:vec3 })
 			}

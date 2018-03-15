@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { default as categoryElement } from '../common/category'
 
-const named = {
+export const named = {
   aliceblue: 0xf0f8ff,
   antiquewhite: 0xfaebd7,
   aqua: 0x00ffff,
@@ -151,15 +151,16 @@ const named = {
   yellow: 0xffff00,
   yellowgreen: 0x9acd32
 };
+
 const propColorName = Symbol("color")
 export default class extends categoryElement{
 	constructor(name = ""){
 		super(...arguments)
-		let values = Object.values(named)
-		this[propColorName] = new THREE.Color(Math.floor((values)[(Math.random() * values.length) >> 0]))
 	}
 	get Color(){
-		return this[propColorName]
+		if(this[propColorName]){ return this[propColorName] }
+		let values = Object.values(named)
+		this[propColorName] = new THREE.Color(Math.floor((values)[(Math.random() * values.length) >> 0]))
 	}
 	initialize(node){
 		super.initialize(node)

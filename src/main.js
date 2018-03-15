@@ -5,7 +5,7 @@ import { default as nodeElement } from './components/nodeElement'
 import { default as linkeElement } from './components/linkElement'
 import { default as categoryElement } from './components/categoryElement'
 import * as d3 from 'd3-force'
-import json from './assets/data3.json'
+import json from './assets/data2.json'
 
 json.legend.map(category => {
 	new categoryElement(name = category)
@@ -20,8 +20,20 @@ json.links.map(link => {
 	new linkeElement(link)
 })
 
-const distanceMax = 120, distanceMin = 0, distance = 50,width = window.innerWidth,height = window.innerHeight
-const simulation = d3.forceSimulation(nodeElement.NodesArray),
+
+const nodes = nodeElement.NodesArray
+let distanceMax = ((nodes.length / 1000) >> 0) + 1, distanceMin = 0, distance = 50,
+    width = window.innerWidth,height = window.innerHeight
+const screen = new Screen(width,height)
+const screenEvent = new domEvent()
+
+//设置相机焦距
+screen.setCamera({ zoom: 1.3 / distanceMax  })
+distanceMax = distanceMax * 120
+
+
+
+const simulation = d3.forceSimulation(nodes),
     simulationLink = d3.forceLink(linkeElement.LinksArray),
     simulationCollide = d3.forceCollide(1),
     simulationCenter = d3.forceCenter(width / 2, height / 2),
@@ -33,8 +45,7 @@ const simulation = d3.forceSimulation(nodeElement.NodesArray),
     .force('center', simulationCenter)
 
 
-const screen = new Screen(width,height)
-const screenEvent = new domEvent()
+
 nodeElement.CircleArray.map(circle => {
     let node = nodeElement.CircleMap.get(circle)
     screen.scene.add(circle)
@@ -60,6 +71,8 @@ screenEvent.on('tap',({ object,position }) => {
         roundNode.y += vy
     })
 })
+
+
 
 
 
