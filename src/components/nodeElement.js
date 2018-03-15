@@ -1,4 +1,5 @@
 import { default as nodeElement } from '../common/nodes'
+import { default as categoryMap } from '../common/category'
 import * as THREE from 'three'
 
 
@@ -22,6 +23,9 @@ export default class extends nodeElement{
     	this[propCircleName].frustumCulled = false
 		//反向映射
 		NODEMAP.set(this[propCircleName],this)
+
+		categoryMap.Categorys.has(this.category) && 
+			this.force('category',categoryMap.Categorys.get(this.category))
 	}
 
 	update(){

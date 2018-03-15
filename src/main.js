@@ -3,7 +3,7 @@ import { Raycaster } from './components/raycaster'
 import { default as domEvent } from './components/domEvents'
 import { default as nodeElement } from './components/nodeElement'
 import { default as linkeElement } from './components/linkElement'
-import { default as categoryElement } from './common/category'
+import { default as categoryElement } from './components/categoryElement'
 import * as d3 from 'd3-force'
 import json from './assets/data3.json'
 

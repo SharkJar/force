@@ -1,6 +1,5 @@
 import { default as Element } from './element'
 import { classAttribute } from '../decorator/classAttribute'
-import { default as categoryMap } from './category'
 import { EventEmitter } from 'events'
 
 const NODES = new Map(),
@@ -33,11 +32,9 @@ export default class extends Element{
 	constructor(options = {}){
 		super(...arguments)
 		Object.assign(this,options)
-		let { name = "",category = "" } = this
+		let { name = "" } = this
 		NODES.set(name,this)
 		this[propEventName].setMaxListeners(500)
-		categoryMap.Categorys.has(category) && 
-			this.force('category',categoryMap.Categorys.get(category))
 	}
 
 	
